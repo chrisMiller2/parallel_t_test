@@ -173,12 +173,18 @@ public class Main {
                 Math.abs((mean1-mean2))/(Math.sqrt((variance1/count)+(variance2/count)));
         System.out.println("T-value = " + String.format("%.1f", t_value));
 
+        //infos
+        System.out.println("Mean of the first set: " + mean1);
+        System.out.println("Mean of the second set: " + mean2);
+        System.out.println("Standard Deviation of the first set: " + standardDeviation1);
+        System.out.println("Standard Deviation of the second set: " + standardDeviation2);
+
 
         double critical = 0.0;
         double t_statistic;
         int degrees_of_freedom = count + count - 2;
 
-        System.out.println("1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
+        System.out.println("Significance level is\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
         int option = scanner.nextInt();
         double p = POption(option);
 
@@ -200,24 +206,39 @@ public class Main {
         System.out.println("T Test: " + Double.toString( t_statistic));
 
         // is the t value higher than the critical value in each column?
-        double firstRange, secRange;
-        firstRange = Math.abs(0.05-0.025);
-        secRange = Math.abs(0.025-0.01);
-        System.out.println("first range " + firstRange);
+        double firstRange = Math.abs(0.05-0.025);
+        double secRange = Math.abs(0.025-0.01);
 
         //if the t-test value is less or greater than our picked p, then we reject it
-        //when p = 0.05, so it is closer to the first half of the first range of (0.05 - 0.025)
+        //when p = 0.05, it is closer to the first half of the first range of (0.05 - 0.025)
+        //first
         if((p == 0.05) && (t_statistic/10 > firstRange)){
             System.out.println("we accept");
         }
         if((p == 0.05) && (t_statistic/10 < firstRange)){
             System.out.println("we reject");
         }
-        if((p == 0.05) && (t_statistic/10 > secRange)){
+
+        //second
+        if((p == 0.025) && (t_statistic/10 > firstRange)){
             System.out.println("we reject");
         }
-        if((p == 0.05) && (t_statistic/10 < secRange)){
+        if((p == 0.025) && (t_statistic/10 < firstRange)){
+            System.out.println("we accept");
+        }
+        if((p == 0.025) && (t_statistic/10 > secRange)){
+            System.out.println("we accept");
+        }
+        if((p == 0.025) && (t_statistic/10 < secRange)){
             System.out.println("we reject");
+        }
+
+        //third
+        if((p == 0.01) && (t_statistic/10 > secRange)){
+            System.out.println("we reject");
+        }
+        if((p == 0.01) && (t_statistic/10 < secRange)){
+            System.out.println("we accept");
         }
 
     }
@@ -240,7 +261,6 @@ public class Main {
         }
         return p;
     }
-
     private static double Variance(double[] dataset, double mean){
         double sqDiff = 0;
         for (int i = 0; i < dataset.length; i++) {

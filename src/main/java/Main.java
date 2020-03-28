@@ -153,8 +153,10 @@ public class Main {
 
 
         //for manual input and testing (https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s)
-        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
-        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
+//        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
+//        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
+        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0, 14.0, 15.2, 15.0, 14.5, 14.5, 15.5, 15.7, 13.4};
+        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9, 16.0, 16.5, 15.2, 14.9, 16.5, 15.3, 14.0, 15.5};
 
 
 
@@ -247,8 +249,8 @@ public class Main {
         double ttestTimeEnd = System.currentTimeMillis();
 
         //timing results
-        System.out.println("Sequential T-Value calculation Time: " + (tvalueEndTime-tvalueStartTime) + "ms.");
-        System.out.println("Sequential T-Test calculation Time: " + (ttestTimeEnd-ttestTimeStart) + "ms.");
+//        System.out.println("Sequential T-Value calculation Time: " + (tvalueEndTime-tvalueStartTime) + "ms.");
+        System.out.println("Sequential T-Test calculation Time: " + ((tvalueEndTime-tvalueStartTime) + (ttestTimeEnd-ttestTimeStart)) + "ms.");
 
     }
 

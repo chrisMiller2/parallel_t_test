@@ -11,6 +11,7 @@ public class Main {
     }
 
     private static void CalculateTTest() {
+
         HashMap<Integer, Double> p005 = new HashMap<Integer, Double>(){{
             put(1, 12.71);
             put(2, 4.3);
@@ -129,30 +130,31 @@ public class Main {
         double variance2 = 0;
 
         //set count of sets
-        System.out.print("Number of datas in both set: ");
-        int count = scanner.nextInt();
+//        System.out.print("Number of datas in both set: ");
+//        int count = scanner.nextInt();
+        int count = 16;
         double[] dataset1 = new double[count];
         double[] dataset2 = new double[count];
-
-        //fist dataset
-        System.out.println("Type in the represented datas of the first set!");
-        for (int i = 0; i < dataset1.length; i++){
-            dataset1[i] = scanner.nextDouble();
-        }
-        System.out.println("First dataset completed\n------------\n");
-
-        //second dataset
-        System.out.println("Type in the represented datas of the second set!");
-        for (int i = 0; i < dataset2.length; i++){
-            dataset2[i] = scanner.nextDouble();
-        }
-        System.out.println("Second dataset completed\n------------\n");
+//
+//        //fist dataset
+//        System.out.println("Type in the represented datas of the first set!");
+//        for (int i = 0; i < dataset1.length; i++){
+//            dataset1[i] = scanner.nextDouble();
+//        }
+//        System.out.println("First dataset completed\n------------\n");
+//
+//        //second dataset
+//        System.out.println("Type in the represented datas of the second set!");
+//        for (int i = 0; i < dataset2.length; i++){
+//            dataset2[i] = scanner.nextDouble();
+//        }
+//        System.out.println("Second dataset completed\n------------\n");
 
 
 
         //for manual input and testing (https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s)
-//        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
-//        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
+        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
+        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
 
 
 
@@ -169,9 +171,11 @@ public class Main {
         variance2 = Variance(dataset1, mean2);
 
         //calculate the t-value
+        double tvalueStartTime = System.currentTimeMillis();
         double t_value =
                 Math.abs((mean1-mean2))/(Math.sqrt((variance1/count)+(variance2/count)));
         System.out.println("T-value = " + String.format("%.1f", t_value));
+        double tvalueEndTime = System.currentTimeMillis();
 
         //infos
         System.out.println("Mean of the first set: " + mean1);
@@ -199,7 +203,7 @@ public class Main {
             System.out.println("Critical value is " + critical + ".");
         }
 
-
+        double ttestTimeStart = System.currentTimeMillis();
         //calculate t-test value
         TTest ttest = new TTest();
         t_statistic = ttest.tTest(dataset1, dataset2);
@@ -240,6 +244,11 @@ public class Main {
         if((p == 0.01) && (t_statistic/10 < secRange)){
             System.out.println("we accept");
         }
+        double ttestTimeEnd = System.currentTimeMillis();
+
+        //timing results
+        System.out.println("Sequential T-Value calculation Time: " + (tvalueEndTime-tvalueStartTime) + "ms.");
+        System.out.println("Sequential T-Test calculation Time: " + (ttestTimeEnd-ttestTimeStart) + "ms.");
 
     }
 

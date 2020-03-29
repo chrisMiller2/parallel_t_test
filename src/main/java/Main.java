@@ -5,13 +5,12 @@ import org.apache.commons.math3.stat.inference.TTest;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Main {
+public class Main extends Thread{
     public static void main(String[] args){
         CalculateTTest();
     }
 
     private static void CalculateTTest() {
-
         HashMap<Integer, Double> p005 = new HashMap<Integer, Double>(){{
             put(1, 12.71);
             put(2, 4.3);
@@ -153,10 +152,8 @@ public class Main {
 
 
         //for manual input and testing (https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s)
-//        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
-//        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
-        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0, 14.0, 15.2, 15.0, 14.5, 14.5, 15.5, 15.7, 13.4};
-        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9, 16.0, 16.5, 15.2, 14.9, 16.5, 15.3, 14.0, 15.5};
+        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
+        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
 
 
 
@@ -172,11 +169,21 @@ public class Main {
         variance1 = Variance(dataset1, mean1);
         variance2 = Variance(dataset1, mean2);
 
+
         //calculate the t-value
         double tvalueStartTime = System.currentTimeMillis();
-        double t_value =
-                Math.abs((mean1-mean2))/(Math.sqrt((variance1/count)+(variance2/count)));
-        System.out.println("T-value = " + String.format("%.1f", t_value));
+        final double finalMean = mean1;
+        final double finalMean1 = mean2;
+        final double finalVariance = variance1;
+        final double finalVariance1 = variance2;
+        Runnable runnable = () ->{
+            double t_value =
+                    Math.abs((finalMean - finalMean1))/(Math.sqrt((finalVariance /count)+(finalVariance1 /count)));
+            System.out.println("T-value = " + String.format("%.1f", t_value));
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+
         double tvalueEndTime = System.currentTimeMillis();
 
         //infos

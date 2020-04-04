@@ -8,6 +8,17 @@ import java.util.Scanner;
 public class Main extends Thread{
     public static void main(String[] args){
         CalculateTTest();
+
+        //is the data two tailed or one tailed?
+        //if we ask the difference between the two sets, we are talking about two tailed ttest
+        //if we ask about one set significantly larger, we are talkin about one tailed ttest
+
+        //is the data paired or unpaired?
+        //unpaired: The two sets are not related to one another
+        //paired: The two sets are related to each other, they line up
+
+        //explaining: https://www.youtube.com/watch?v=qvPWQ-e03tQ
+        //manual: https://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/inference/TTest.html
     }
 
     private static void CalculateTTest() {
@@ -129,11 +140,9 @@ public class Main extends Thread{
         double variance2 = 0;
 
         //set count of sets
-//        System.out.print("Number of datas in both set: ");
-//        int count = scanner.nextInt();
-        int count = 16;
-        double[] dataset1 = new double[count];
-        double[] dataset2 = new double[count];
+
+        double[] dataset1;
+        double[] dataset2;
 //
 //        //fist dataset
 //        System.out.println("Type in the represented datas of the first set!");
@@ -152,26 +161,29 @@ public class Main extends Thread{
 
 
         //for manual input and testing (https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s)
-        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
-        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
+//        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
+//        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
 
-
-
-        //calculate mean
+        //for another manual input and testing
+        dataset1 = new double[]{935, 955, 967, 1002, 1000, 964, 952, 933};
+        dataset2 = new double[]{978, 982, 1017, 973, 1006, 1017, 995, 1048};
+        int count = dataset1.length;
+        //calculate mean, standard deviation, variance
         mean1 = Mean(dataset1);
         mean2 = Mean(dataset2);
-
-        //calculate standard deviation
+        System.out.println("Mean of the first set: " + mean1);
+        System.out.println("Mean of the second set: " + mean2);
         standardDeviation1 = StandardDeviation(dataset1, mean1);
         standardDeviation2 = StandardDeviation(dataset2, mean2);
-
-        //calculate variance
+        System.out.println("Standard Deviation of the first set: " + standardDeviation1);
+        System.out.println("Standard Deviation of the second set: " + standardDeviation2);
         variance1 = Variance(dataset1, mean1);
         variance2 = Variance(dataset1, mean2);
-
+        System.out.println("Variance of the first set: " + variance1);
+        System.out.println("Variance of the second set: " + variance2);
 
         //calculate the t-value
-        double tvalueStartTime = System.currentTimeMillis();
+        double tValueStartTime = System.currentTimeMillis();
         final double finalMean = mean1;
         final double finalMean1 = mean2;
         final double finalVariance = variance1;
@@ -184,30 +196,29 @@ public class Main extends Thread{
         Thread thread = new Thread(runnable);
         thread.start();
 
-        double tvalueEndTime = System.currentTimeMillis();
-
-        //infos
-        System.out.println("Mean of the first set: " + mean1);
-        System.out.println("Mean of the second set: " + mean2);
-        System.out.println("Standard Deviation of the first set: " + standardDeviation1);
-        System.out.println("Standard Deviation of the second set: " + standardDeviation2);
-
+        double tValueEndTime = System.currentTimeMillis();
 
         double critical = 0.0;
-        double t_statistic;
         int degrees_of_freedom = count + count - 2;
 
+        //significance level = chance of data being random
         System.out.println("Significance level is\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
         int option = scanner.nextInt();
         double p = POption(option);
 
         if (p == 0.01) {
+            //we want a critical value that is less, than 0.01
+            //so we have less than 1% chance that the data is random
             critical = p001.get(degrees_of_freedom);
             System.out.println("Critical value is " + critical + ".");
         } else if (p == 0.025) {
+            //we want a critical value that is less, than 0.025
+            //so we have less than 2.5% chance that the data is random
             critical = p0025.get(degrees_of_freedom);
             System.out.println("Critical value is " + critical + ".");
         } else if (p == 0.05) {
+            //we want a critical value that is less, than 0.05
+            //so we have less than 5% chance that the data is random
             critical = p005.get(degrees_of_freedom);
             System.out.println("Critical value is " + critical + ".");
         }
@@ -215,49 +226,39 @@ public class Main extends Thread{
         double ttestTimeStart = System.currentTimeMillis();
         //calculate t-test value
         TTest ttest = new TTest();
-        t_statistic = ttest.tTest(dataset1, dataset2);
-        System.out.println("T Test: " + Double.toString( t_statistic));
+        double t_statistic = 0.0;
+        boolean isItSignificant = false;
+        System.out.println("Are the sets (1) paired or (2) unpaired?");
+        int paired = scanner.nextInt();
+        if(paired == 1){
+            //two tailed, paired
+            t_statistic = ttest.pairedTTest(dataset1, dataset2);
+            isItSignificant = ttest.pairedTTest(dataset1, dataset2, p);
+            System.out.println("T Test: " + Double.toString(t_statistic) + ", only " + Math.round(t_statistic*100) + "%.");
 
-        // is the t value higher than the critical value in each column?
-        double firstRange = Math.abs(0.05-0.025);
-        double secRange = Math.abs(0.025-0.01);
+            //the less the ttest value, the more significant it is
+            if(isItSignificant){
+                System.out.println("it is significant, the data is not likely random");
+            }else{
+                System.out.println("it is not significant, the data is likely random");
+            }
+        }else if(paired == 2){
+            t_statistic = ttest.tTest(dataset1, dataset2);
+            isItSignificant = ttest.tTest(dataset1, dataset2, p);
+            System.out.println("T Test: " + Double.toString(t_statistic) + ", only " + Math.round(t_statistic*100) + "%.");
 
-        //if the t-test value is less or greater than our picked p, then we reject it
-        //when p = 0.05, it is closer to the first half of the first range of (0.05 - 0.025)
-        //first
-        if((p == 0.05) && (t_statistic/10 > firstRange)){
-            System.out.println("we accept");
-        }
-        if((p == 0.05) && (t_statistic/10 < firstRange)){
-            System.out.println("we reject");
-        }
-
-        //second
-        if((p == 0.025) && (t_statistic/10 > firstRange)){
-            System.out.println("we reject");
-        }
-        if((p == 0.025) && (t_statistic/10 < firstRange)){
-            System.out.println("we accept");
-        }
-        if((p == 0.025) && (t_statistic/10 > secRange)){
-            System.out.println("we accept");
-        }
-        if((p == 0.025) && (t_statistic/10 < secRange)){
-            System.out.println("we reject");
+            //the less the ttest value, the more significant it is
+            if(isItSignificant){
+                System.out.println("it is significant, the data is not likely random");
+            }else{
+                System.out.println("it is not significant, the data is likely random");
+            }
         }
 
-        //third
-        if((p == 0.01) && (t_statistic/10 > secRange)){
-            System.out.println("we reject");
-        }
-        if((p == 0.01) && (t_statistic/10 < secRange)){
-            System.out.println("we accept");
-        }
         double ttestTimeEnd = System.currentTimeMillis();
 
         //timing results
-//        System.out.println("Sequential T-Value calculation Time: " + (tvalueEndTime-tvalueStartTime) + "ms.");
-        System.out.println("Sequential T-Test calculation Time: " + ((tvalueEndTime-tvalueStartTime) + (ttestTimeEnd-ttestTimeStart)) + "ms.");
+        System.out.println("Sequential T-Test calculation Time: " + ((tValueEndTime-tValueStartTime) + (ttestTimeEnd-ttestTimeStart)) + "ms.");
 
     }
 

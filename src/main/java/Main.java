@@ -164,9 +164,9 @@ public class Main extends Thread {
 
         //for another manual input and testing
         dataset1 = new double[]{23, 25, 28, 30, 25, 25, 26, 25, 22, 30, 35, 40, 35, 30};
-        dataset2 = new double[]{35, 40, 30, 35, 40, 45, 30, 30, 35, 40, 40, 35, 38, 41};
+        dataset2 = new double[]{35, 40, 30, 35, 40, 45, 30, 30, 35, 40, 40, 35, 38, 40};
         int count = dataset1.length;
-        int degrees_of_freedom = count - 1;
+        int degrees_of_freedom = count -1;
 
         //calculate differences
         double[] difference = new double[count];
@@ -207,9 +207,6 @@ public class Main extends Thread {
         double t_value;
 
         double tValueStartTime = System.currentTimeMillis();
-            //could be wrong
-//            double t_value =
-//                    Math.abs((mean1 - mean2)) / (Math.sqrt((variance1 / count) + (variance2 / count)));
         t_value = (difference_sum) /
                     (Math.sqrt((count * difference_squared_sum - (Math.pow(difference_sum,2))) / (count -1)));
             System.out.println("T-value = " + String.format("%.3f", t_value));
@@ -251,7 +248,7 @@ public class Main extends Thread {
             critical = critical * (-1);
             System.out.println("Left-tail, critical value becomes negative: " + critical);
         }else{
-            System.out.println("Right-tail, critical value becomes negative: " + critical);
+            System.out.println("Right-tail");
         }
 
         if(t_value < critical){

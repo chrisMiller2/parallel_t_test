@@ -162,12 +162,10 @@ public class Main extends Thread {
         //for manual input and testing (https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s)
 //        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
 //        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
-
-        //for another manual input and testing
         dataset1 = new double[]{23, 25, 28, 30, 25, 25, 26, 25, 22, 30, 35, 40, 35, 30};
-        dataset2 = new double[]{35, 40, 30, 35, 40, 45, 30, 30, 35, 40, 40, 35, 38, 40};
+        dataset2 = new double[]{35, 40, 30, 35, 40, 45, 30, 30, 35, 40, 40, 35, 38, 41};
         int count = dataset1.length;
-        int degrees_of_freedom = count -1;
+        int degrees_of_freedom = count - 1;
 
         //calculate differences
         double[] difference = new double[count];
@@ -187,17 +185,14 @@ public class Main extends Thread {
         //mean, standard deviation, variance
         mean1 = Mean(dataset1);
         mean2 = Mean(dataset2);
-        System.out.println("Mean of the 1. set: " + String.format("%.3f", mean1));
-        System.out.println("Mean of the 2. set: " + String.format("%.3f", mean2));
-        standardDeviation1 = StandardDeviation(dataset1, mean1);
-        standardDeviation2 = StandardDeviation(dataset2, mean2);
-        System.out.println("Standard Deviation of the 1. set: " + String.format("%.3f", standardDeviation1));
-        System.out.println("Standard Deviation of the 2. set: " + String.format("%.3f", standardDeviation2));
+        standardDeviation1 = StandardDeviation(dataset1);
+        standardDeviation2 = StandardDeviation(dataset2);
         variance1 = Variance(dataset1, mean1);
         variance2 = Variance(dataset1, mean2);
-        System.out.println("Variance of the 1. set: " + String.format("%.3f", variance1));
-        System.out.println("Variance of the 2. set: " + String.format("%.3f", variance2));
-        System.out.println("The mean of the difference of the sets: " + String.format("%.3f", difference_sum/count));
+        System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1)+ "\t" + String.format("%.3f", mean2));
+        System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1) + "\t" + String.format("%.3f", standardDeviation2));
+        System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1) + "\t" + String.format("%.3f", variance2));
+        System.out.println("The mean of the difference of the sets:\t" + String.format("%.3f", difference_sum / count));
         System.out.println("Degrees of Freedom: " + degrees_of_freedom);
 
         //calculate the t-value
@@ -208,23 +203,26 @@ public class Main extends Thread {
         double t_value;
 
         double tValueStartTime = System.currentTimeMillis();
+//        t_value = (mean1 - mean2) /
+//                (double) (Math.sqrt((standardDeviation1*standardDeviation2) /
+//                        count + (standardDeviation1*standardDeviation2) / count));
         t_value = (difference_sum) /
-                    (Math.sqrt((count * difference_squared_sum - (Math.pow(difference_sum,2))) / (count -1)));
-            System.out.println("T-value = " + String.format("%.3f", t_value));
+                (Math.sqrt((count * difference_squared_sum - (Math.pow(difference_sum, 2))) / (count - 1)));
+        System.out.println("T-value = " + String.format("%.3f", t_value));
         double tValueEndTime = System.currentTimeMillis();
 
 
         //significance level = chance of data being random
-        System.out.println("Significance level is\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
+        System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
         int option = scanner.nextInt();
 
 
         //tail definition
         System.out.println("(1) Two tailed or (2) One tailed?");
         int tailOption = scanner.nextInt();
-        if(tailOption == 1){
-            p = POption(option)/2;
-        }else{
+        if (tailOption == 1) {
+            p = POption(option) / 2;
+        } else {
             p = POption(option);
         }
 
@@ -245,20 +243,20 @@ public class Main extends Thread {
         //calculate t-test value
         double ttestTimeStart = System.currentTimeMillis();
 
-        if(t_value < 0){
+        if (t_value < 0) {
             critical = critical * (-1);
             System.out.println("Left-tail, critical value becomes negative: " + critical);
-        }else{
+        } else {
             System.out.println("Right-tail");
         }
 
-        if(t_value < critical){
-            if(tailOption == 1){
-                System.out.print(100-(p*200) + "% confidence, that ");
-            }else
-                System.out.print(100-(p*100) + "% confidence, that ");
+        if (t_value < critical) {
+            if (tailOption == 1) {
+                System.out.print(100 - (p * 200) + "% confidence, that ");
+            } else
+                System.out.print(100 - (p * 100) + "% confidence, that ");
             System.out.println("it is significant, the data is not likely random, we reject null hypothesis.");
-        }else
+        } else
             System.out.println("it is not significant, the data is likely random, we accept null hypothesis.");
 
 //        TTest ttest = new TTest();
@@ -325,13 +323,12 @@ public class Main extends Thread {
         return (double) sqDiff / dataset.length;
     }
 
-    private static double StandardDeviation(double[] dataset, double mean) {
-        double newSum = 0;
-        for (int j = 0; j < dataset.length; j++) {
-            newSum = newSum + ((dataset[j] - mean) * (dataset[j] - mean));
+    private static double StandardDeviation(double[] dataset) {
+        double sum = 0;
+        for (int i = 0; i < dataset.length; i++) {
+            sum = sum + ((dataset[i] - Mean(dataset)) * (dataset[i] - Mean(dataset)));
         }
-        double squaredDiffMean = (newSum) / (dataset.length);
-        return (Math.sqrt(squaredDiffMean));
+        return (double) Math.sqrt(sum / (dataset.length - 1));
     }
 
     private static double Mean(double[] dataset1) {

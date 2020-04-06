@@ -19,6 +19,7 @@ public class Main extends Thread {
 
         //explaining: https://www.youtube.com/watch?v=qvPWQ-e03tQ
         //manual: https://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/inference/TTest.html
+        //testing: https://www.graphpad.com/quickcalcs/ttest1/
     }
 
     private static void CalculateTTest() {

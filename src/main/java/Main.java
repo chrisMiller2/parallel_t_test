@@ -132,12 +132,12 @@ public class Main extends Thread {
         }};
         Scanner scanner = new Scanner(System.in);
 
-        double mean1 = 0;
-        double mean2 = 0;
-        double standardDeviation1 = 0;
-        double standardDeviation2 = 0;
-        double variance1 = 0;
-        double variance2 = 0;
+        double mean1;
+        double mean2;
+        double standardDeviation1;
+        double standardDeviation2;
+        double variance1;
+        double variance2;
         double[] dataset1;
         double[] dataset2;
         double critical = 0.0;
@@ -183,35 +183,35 @@ public class Main extends Thread {
         }
 
 
-        //calculate mean, standard deviation, variance
+        //mean, standard deviation, variance
         mean1 = Mean(dataset1);
         mean2 = Mean(dataset2);
-        System.out.println("Mean of the first set: " + mean1);
-        System.out.println("Mean of the second set: " + mean2);
+        System.out.println("Mean of the 1. set: " + String.format("%.3f", mean1));
+        System.out.println("Mean of the 2. set: " + String.format("%.3f", mean2));
         standardDeviation1 = StandardDeviation(dataset1, mean1);
         standardDeviation2 = StandardDeviation(dataset2, mean2);
-        System.out.println("Standard Deviation of the first set: " + standardDeviation1);
-        System.out.println("Standard Deviation of the second set: " + standardDeviation2);
+        System.out.println("Standard Deviation of the 1. set: " + String.format("%.3f", standardDeviation1));
+        System.out.println("Standard Deviation of the 2. set: " + String.format("%.3f", standardDeviation2));
         variance1 = Variance(dataset1, mean1);
         variance2 = Variance(dataset1, mean2);
-        System.out.println("Variance of the first set: " + variance1);
-        System.out.println("Variance of the second set: " + variance2);
-
+        System.out.println("Variance of the 1. set: " + String.format("%.3f", variance1));
+        System.out.println("Variance of the 2. set: " + String.format("%.3f", variance2));
+        System.out.println("The mean of the difference of the sets: " + String.format("%.3f", difference_sum/count));
+        System.out.println("Degrees of Freedom: " + degrees_of_freedom);
 
         //calculate the t-value
-        final double finalMean = mean1;
-        final double finalMean1 = mean2;
-        final double finalVariance = variance1;
-        final double finalVariance1 = variance2;
-        final int n = count;
-        double t_value = 0;
+//        final double finalMean = mean1;
+//        final double finalMean1 = mean2;
+//        final double finalVariance = variance1;
+//        final double finalVariance1 = variance2;
+        double t_value;
 
         double tValueStartTime = System.currentTimeMillis();
             //could be wrong
 //            double t_value =
-//                    Math.abs((finalMean - finalMean1)) / (Math.sqrt((finalVariance / count) + (finalVariance1 / count)));
+//                    Math.abs((mean1 - mean2)) / (Math.sqrt((variance1 / count) + (variance2 / count)));
         t_value = (difference_sum) /
-                    (Math.sqrt((n * difference_squared_sum - (Math.pow(difference_sum,2))) / (n-1)));
+                    (Math.sqrt((count * difference_squared_sum - (Math.pow(difference_sum,2))) / (count -1)));
             System.out.println("T-value = " + String.format("%.3f", t_value));
         double tValueEndTime = System.currentTimeMillis();
 
@@ -243,24 +243,25 @@ public class Main extends Thread {
             System.out.println("Critical value is " + critical + ".");
         }
 
-        double ttestTimeStart = System.currentTimeMillis();
+
         //calculate t-test value
+        double ttestTimeStart = System.currentTimeMillis();
+
         if(t_value < 0){
             critical = critical * (-1);
             System.out.println("Left-tail, critical value becomes negative: " + critical);
-            if(t_value < critical){
-                System.out.println("it is significant, the data is not likely random, we reject null hypothesis");
-            }else{
-                System.out.println("it is not significant, the data is likely random, we accept null hypothesis");
-            }
         }else{
-            System.out.println("Left-tail, critical value becomes negative: " + critical);
-            if(t_value < critical){
-                System.out.println("it is significant, the data is not likely random, we reject null hypothesis");
-            }else{
-                System.out.println("it is not significant, the data is likely random, we accept null hypothesis");
-            }
+            System.out.println("Right-tail, critical value becomes negative: " + critical);
         }
+
+        if(t_value < critical){
+            if(tailOption == 1){
+                System.out.print(100-(p*200) + "% confidence, that ");
+            }else
+                System.out.print(100-(p*100) + "% confidence, that ");
+            System.out.println("it is significant, the data is not likely random, we reject null hypothesis.");
+        }else
+            System.out.println("it is not significant, the data is likely random, we accept null hypothesis.");
 
 //        TTest ttest = new TTest();
 //        double t_statistic = 0.0;

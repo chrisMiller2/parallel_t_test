@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class Main extends Thread {
     public static void main(String[] args) {
+        //two sampled t-test
         CalculateTTest();
 
         //is the data two tailed or one tailed?
@@ -143,7 +144,7 @@ public class Main extends Thread {
         double[] dataset2;
         double critical = 0.0;
         double p;
-//
+
 //        //fist dataset
 //        System.out.println("Type in the represented datas of the first set!");
 //        for (int i = 0; i < dataset1.length; i++){
@@ -159,40 +160,45 @@ public class Main extends Thread {
 //        System.out.println("Second dataset completed\n------------\n");
 
 
-        //for manual input and testing (https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s)
+        //https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s
 //        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
 //        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
-        dataset1 = new double[]{23, 25, 28, 30, 25, 25, 26, 25, 22, 30, 35, 40, 35, 30};
-        dataset2 = new double[]{35, 40, 30, 35, 40, 45, 30, 30, 35, 40, 40, 35, 38, 41};
-        int count = dataset1.length;
-        int degrees_of_freedom = count - 1;
+        //https://www.youtube.com/watch?v=BPbHujvA9UU&t=119s
+//        dataset1 = new double[]{23, 25, 28, 30, 25, 25, 26, 25, 22, 30, 35, 40, 35, 30};
+//        dataset2 = new double[]{35, 40, 30, 35, 40, 45, 30, 30, 35, 40, 40, 35, 38, 41};
+        //https://hu.wikipedia.org/wiki/K%C3%A9tmint%C3%A1s_t-pr%C3%B3ba#A_pr%C3%B3ba_nullhipot%C3%A9zise
+        dataset1 = new double[]{52,57,62,55,64,57,56,55};
+        dataset2 = new double[]{41,34,33,36,40,25,31,37,34,30,38};
+        int n = dataset1.length;
+        int m = dataset2.length;
+        int degrees_of_freedom = n + m - 2;
 
         //calculate differences
-        double[] difference = new double[count];
-        double[] difference_squared = new double[count];
-        for (int i = 0; i < count; i++) {
-            difference[i] = dataset1[i] - dataset2[i];
-            difference_squared[i] = Math.pow(difference[i], 2);
-        }
-        double difference_sum = 0;
-        double difference_squared_sum = 0;
-        for (int i = 0; i < count; i++) {
-            difference_sum += difference[i];
-            difference_squared_sum += difference_squared[i];
-        }
+//        double[] difference = new double[n];
+//        double[] difference_squared = new double[n];
+//        for (int i = 0; i < n; i++) {
+//            difference[i] = dataset1[i] - dataset2[i];
+//            difference_squared[i] = Math.pow(difference[i], 2);
+//        }
+//        double difference_sum = 0;
+//        double difference_squared_sum = 0;
+//        for (int i = 0; i < n; i++) {
+//            difference_sum += difference[i];
+//            difference_squared_sum += difference_squared[i];
+//        }
 
 
         //mean, standard deviation, variance
         mean1 = Mean(dataset1);
         mean2 = Mean(dataset2);
-        standardDeviation1 = StandardDeviation(dataset1);
-        standardDeviation2 = StandardDeviation(dataset2);
+        standardDeviation1 = Math.pow(StandardDeviation(dataset1),2);
+        standardDeviation2 = Math.pow(StandardDeviation(dataset2),2);
         variance1 = Variance(dataset1, mean1);
         variance2 = Variance(dataset1, mean2);
-        System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1)+ "\t" + String.format("%.3f", mean2));
+        System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1) + "\t" + String.format("%.3f", mean2));
         System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1) + "\t" + String.format("%.3f", standardDeviation2));
         System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1) + "\t" + String.format("%.3f", variance2));
-        System.out.println("The mean of the difference of the sets:\t" + String.format("%.3f", difference_sum / count));
+//        System.out.println("The mean of the difference of the sets:\t" + String.format("%.3f", difference_sum / n));
         System.out.println("Degrees of Freedom: " + degrees_of_freedom);
 
         //calculate the t-value
@@ -203,11 +209,16 @@ public class Main extends Thread {
         double t_value;
 
         double tValueStartTime = System.currentTimeMillis();
+        t_value = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 +
+                (m - 1) * standardDeviation2))) *
+                (Math.sqrt((n * m * (double)(degrees_of_freedom)) / (n + m)));
+
 //        t_value = (mean1 - mean2) /
-//                (double) (Math.sqrt((standardDeviation1*standardDeviation2) /
-//                        count + (standardDeviation1*standardDeviation2) / count));
-        t_value = (difference_sum) /
-                (Math.sqrt((count * difference_squared_sum - (Math.pow(difference_sum, 2))) / (count - 1)));
+//                (double) (Math.sqrt(
+//                        (standardDeviation1*standardDeviation2) / n +
+//                                (standardDeviation1*standardDeviation2) / n));
+//        t_value = (difference_sum) /
+//                (Math.sqrt((count * difference_squared_sum - (Math.pow(difference_sum, 2))) / (count - 1)));
         System.out.println("T-value = " + String.format("%.3f", t_value));
         double tValueEndTime = System.currentTimeMillis();
 
@@ -215,16 +226,16 @@ public class Main extends Thread {
         //significance level = chance of data being random
         System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
         int option = scanner.nextInt();
-
+        p = POption(option);
 
         //tail definition
-        System.out.println("(1) Two tailed or (2) One tailed?");
-        int tailOption = scanner.nextInt();
-        if (tailOption == 1) {
-            p = POption(option) / 2;
-        } else {
-            p = POption(option);
-        }
+//        System.out.println("(1) Two tailed or (2) One tailed?");
+//        int tailOption = scanner.nextInt();
+//        if (tailOption == 1) {
+//            p = POption(option) / 2;
+//        } else {
+//            p = POption(option);
+//        }
 
         //we want a critical value that is less, than p
         //so we have less than p*100% chance that the data is random
@@ -250,11 +261,12 @@ public class Main extends Thread {
             System.out.println("Right-tail");
         }
 
-        if (t_value < critical) {
-            if (tailOption == 1) {
-                System.out.print(100 - (p * 200) + "% confidence, that ");
-            } else
-                System.out.print(100 - (p * 100) + "% confidence, that ");
+        System.out.print(100 - (p * 100) + "% confidence, that ");
+        if (t_value > critical) {
+//            if (tailOption == 1) {
+//                System.out.print(100 - (p * 200) + "% confidence, that ");
+//            } else
+//                System.out.print(100 - (p * 100) + "% confidence, that ");
             System.out.println("it is significant, the data is not likely random, we reject null hypothesis.");
         } else
             System.out.println("it is not significant, the data is likely random, we accept null hypothesis.");

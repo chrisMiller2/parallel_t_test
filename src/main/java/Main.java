@@ -230,14 +230,14 @@ public class Main extends Thread {
         int n = dataset1.size();
         System.out.println("First dataset completed\n------------\n");
 
-        //fist dataset
+        //second dataset
         i = 1;
         System.out.println("Type in the represented data of the second set! Press '0' to quit!");
         while (true) {
             System.out.print(i + ".: ");
             double userInput = scanner.nextDouble();
             if (userInput != 0) {
-                dataset1.add(userInput);
+                dataset2.add(userInput);
                 i++;
             }else
                 break;
@@ -259,21 +259,6 @@ public class Main extends Thread {
 //        int m = dataset2.length;
         int degrees_of_freedom = n + m - 2;
 
-        //calculate differences
-//        double[] difference = new double[n];
-//        double[] difference_squared = new double[n];
-//        for (int i = 0; i < n; i++) {
-//            difference[i] = dataset1[i] - dataset2[i];
-//            difference_squared[i] = Math.pow(difference[i], 2);
-//        }
-//        double difference_sum = 0;
-//        double difference_squared_sum = 0;
-//        for (int i = 0; i < n; i++) {
-//            difference_sum += difference[i];
-//            difference_squared_sum += difference_squared[i];
-//        }
-
-
         //mean, standard deviation, variance
         mean1 = Mean(dataset1);
         mean2 = Mean(dataset2);
@@ -290,16 +275,11 @@ public class Main extends Thread {
         //calculate the t-value
         double t_value;
         double tValueStartTime = System.currentTimeMillis();
-        t_value = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 +
-                (m - 1) * standardDeviation2))) *
-                (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
 
-//        t_value = (mean1 - mean2) /
-//                (double) (Math.sqrt(
-//                        (standardDeviation1*standardDeviation2) / n +
-//                                (standardDeviation1*standardDeviation2) / n));
-//        t_value = (difference_sum) /
-//                (Math.sqrt((count * difference_squared_sum - (Math.pow(difference_sum, 2))) / (count - 1)));
+        t_value = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 +
+                    (m - 1) * standardDeviation2))) *
+                    (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
+
         System.out.println("T-value = " + String.format("%.3f", t_value));
         double tValueEndTime = System.currentTimeMillis();
 

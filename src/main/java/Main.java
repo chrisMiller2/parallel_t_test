@@ -139,12 +139,12 @@ public class Main extends Thread {
     private static void OneSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
         ArrayList<Double> dataset = new ArrayList<Double>();
         //fist dataset
-        System.out.println("Type in the represented data of the set! Press '0' to quit!");
+        System.out.println("Type in the represented data of the set! Type '-1' to quit!");
         int i = 1;
         while(true) {
             System.out.print(i + ".: ");
             double userInput = scanner.nextDouble();
-            if (userInput != 0) {
+            if (userInput != -1) {
                 dataset.add(userInput);
                 i++;
             }else
@@ -215,13 +215,14 @@ public class Main extends Thread {
         ArrayList<Double> dataset2 = new ArrayList<Double>();
         double arrayElement = 0;
 
+
         //fist dataset
         int i = 1;
-        System.out.println("Type in the represented data of the first set! Press '0' to quit!");
+        System.out.println("Type in the represented data of the first set! Type '-1' to quit!");
         while (true) {
             System.out.print(i + ".: ");
             double userInput = scanner.nextDouble();
-            if (userInput != 0) {
+            if (userInput != -1) {
                 dataset1.add(userInput);
                 i++;
             }else
@@ -232,11 +233,11 @@ public class Main extends Thread {
 
         //second dataset
         i = 1;
-        System.out.println("Type in the represented data of the second set! Press '0' to quit!");
+        System.out.println("Type in the represented data of the second set! Type '-1' to quit!");
         while (true) {
             System.out.print(i + ".: ");
             double userInput = scanner.nextDouble();
-            if (userInput != 0) {
+            if (userInput != -1) {
                 dataset2.add(userInput);
                 i++;
             }else
@@ -366,11 +367,11 @@ public class Main extends Thread {
         double ttestTimeEnd = System.currentTimeMillis();
 
         //timing results
-        System.out.println("Sequential T-Test calculation Time: " + ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart)) + "ms.");
+        System.out.println("Sequential T-Test calculation Time: %.5f" + ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart)) + "ms.");
         exit();
     }
 
-    public static void exit() {
+    private static void exit() {
         System.out.println("\nAnother measure? (1) Yes, (2) No");
         int thereIsAnother = scanner.nextInt();
         if (thereIsAnother == 1) {
@@ -381,7 +382,7 @@ public class Main extends Thread {
         }
     }
 
-    public static void menu() {
+    private static void menu() {
         System.out.println("*****Welcome to the T-TEST*****");
         System.out.println("(1) One sampled or (2) Two sampled T-Test?");
         int option = scanner.nextInt();

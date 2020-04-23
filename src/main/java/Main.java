@@ -141,13 +141,13 @@ public class Main extends Thread {
         //fist dataset
         System.out.println("Type in the represented data of the set! Type '-1' to quit!");
         int i = 1;
-        while(true) {
+        while (true) {
             System.out.print(i + ".: ");
             double userInput = scanner.nextDouble();
             if (userInput != -1) {
                 dataset.add(userInput);
                 i++;
-            }else
+            } else
                 break;
         }
         int n = dataset.size();
@@ -215,36 +215,52 @@ public class Main extends Thread {
         ArrayList<Double> dataset2 = new ArrayList<Double>();
         double arrayElement = 0;
 
+        //random datasets
+        double min = 10;
+        double max = 20;
 
-        //fist dataset
-        int i = 1;
-        System.out.println("Type in the represented data of the first set! Type '-1' to quit!");
-        while (true) {
-            System.out.print(i + ".: ");
-            double userInput = scanner.nextDouble();
-            if (userInput != -1) {
-                dataset1.add(userInput);
-                i++;
-            }else
-                break;
+        Random r = new Random();
+        for (int i = 0; i < 16; i++) {
+            double randomValue = min + (max - min) * r.nextDouble();
+            dataset1.add(randomValue);
         }
         int n = dataset1.size();
-        System.out.println("First dataset completed\n------------\n");
 
-        //second dataset
-        i = 1;
-        System.out.println("Type in the represented data of the second set! Type '-1' to quit!");
-        while (true) {
-            System.out.print(i + ".: ");
-            double userInput = scanner.nextDouble();
-            if (userInput != -1) {
-                dataset2.add(userInput);
-                i++;
-            }else
-                break;
+        for (int i = 0; i < 16; i++) {
+            double randomValue = min + (max - min) * r.nextDouble();
+            dataset2.add(randomValue);
         }
         int m = dataset2.size();
-        System.out.println("Second dataset completed\n------------\n");
+
+        //fist dataset
+//        int i = 1;
+//        System.out.println("Type in the represented data of the first set! Type '-1' to quit!");
+//        while (true) {
+//            System.out.print(i + ".: ");
+//            double userInput = scanner.nextDouble();
+//            if (userInput != -1) {
+//                dataset1.add(userInput);
+//                i++;
+//            }else
+//                break;
+//        }
+//        int n = dataset1.size();
+//        System.out.println("First dataset completed\n------------\n");
+//
+//        //second dataset
+//        i = 1;
+//        System.out.println("Type in the represented data of the second set! Type '-1' to quit!");
+//        while (true) {
+//            System.out.print(i + ".: ");
+//            double userInput = scanner.nextDouble();
+//            if (userInput != -1) {
+//                dataset2.add(userInput);
+//                i++;
+//            }else
+//                break;
+//        }
+//        int m = dataset2.size();
+//        System.out.println("Second dataset completed\n------------\n");
 
 
         //https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s
@@ -261,6 +277,7 @@ public class Main extends Thread {
         int degrees_of_freedom = n + m - 2;
 
         //mean, standard deviation, variance
+        double tValueStartTime = System.currentTimeMillis();
         mean1 = Mean(dataset1);
         mean2 = Mean(dataset2);
         standardDeviation1 = Math.pow(StandardDeviation(dataset1), 2);
@@ -275,11 +292,10 @@ public class Main extends Thread {
 
         //calculate the t-value
         double t_value;
-        double tValueStartTime = System.currentTimeMillis();
 
         t_value = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 +
-                    (m - 1) * standardDeviation2))) *
-                    (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
+                (m - 1) * standardDeviation2))) *
+                (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
 
         System.out.println("T-value = " + String.format("%.3f", t_value));
         double tValueEndTime = System.currentTimeMillis();
@@ -367,7 +383,7 @@ public class Main extends Thread {
         double ttestTimeEnd = System.currentTimeMillis();
 
         //timing results
-        System.out.println("Sequential T-Test calculation Time: %.5f" + ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart)) + "ms.");
+        System.out.println("Sequential T-Test calculation Time: " + String.format("%.5f",((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart))) + "ms.");
         exit();
     }
 
@@ -435,8 +451,8 @@ public class Main extends Thread {
 
     private static double Mean(ArrayList<Double> dataset) {
         double sum = 0;
-        for (int i = 0; i < dataset.size(); i++) {
-            sum += dataset.get(i);
+        for (Double aDouble : dataset) {
+            sum += aDouble;
         }
         return sum / dataset.size();
     }

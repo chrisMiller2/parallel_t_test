@@ -2,41 +2,77 @@ import java.util.*;
 
 public class Main extends Thread {
     static Scanner scanner = new Scanner(System.in);
-    static HashMap<Integer, Double> p005 = new HashMap<Integer, Double>() {{
-        put(1, 6.314);
-        put(2, 2.920);
-        put(3, 2.353);
-        put(4, 2.132);
-        put(5, 2.015);
-        put(6, 1.943);
-        put(7, 1.895);
-        put(8, 1.860);
-        put(9, 1.833);
-        put(10, 1.812);
-        put(11, 1.796);
-        put(12, 1.782);
-        put(13, 1.771);
-        put(14, 1.761);
-        put(15, 1.753);
-        put(16, 1.746);
-        put(17, 1.740);
-        put(18, 1.734);
-        put(19, 1.729);
-        put(20, 1.725);
-        put(21, 1.721);
-        put(22, 1.717);
-        put(23, 1.714);
-        put(24, 1.711);
-        put(25, 1.708);
-        put(26, 1.706);
-        put(27, 1.703);
-        put(28, 1.701);
-        put(29, 1.699);
-        put(30, 1.697);
-        put(40, 1.684);
-        put(60, 1.671);
-        put(120, 1.658);
-        put(999, 1.645);
+    static HashMap<Integer, Double> p001 = new HashMap<Integer, Double>() {{
+        put(1, 31.821);
+        put(2, 6.965);
+        put(3, 4.541);
+        put(4, 3.747);
+        put(5, 3.365);
+        put(6, 3.143);
+        put(7, 2.998);
+        put(8, 2.896);
+        put(9, 2.821);
+        put(10, 2.764);
+        put(11, 2.718);
+        put(12, 2.681);
+        put(13, 2.650);
+        put(14, 2.624);
+        put(15, 2.602);
+        put(16, 2.583);
+        put(17, 2.567);
+        put(18, 2.552);
+        put(19, 2.539);
+        put(20, 2.528);
+        put(21, 2.518);
+        put(22, 2.508);
+        put(23, 2.500);
+        put(24, 2.492);
+        put(25, 2.485);
+        put(26, 2.479);
+        put(27, 2.473);
+        put(28, 2.467);
+        put(29, 2.462);
+        put(30, 2.457);
+        put(31, 2.453);
+        put(32, 2.449);
+        put(33, 2.445);
+        put(34, 2.441);
+        put(35, 2.438);
+        put(36, 2.434);
+        put(37, 2.431);
+        put(38, 2.429);
+        put(39, 2.426);
+        put(40, 2.423);
+        put(41, 2.420); //guess
+        put(42, 2.418);
+        put(43, 2.416); //guess
+        put(44, 2.414);
+        put(45, 2.412); //guess
+        put(46, 2.410);
+        put(47, 2.408); //guess
+        put(48, 2.407);
+        put(49, 2.405); //guess
+        put(50, 2.403);
+        put(51, 2.402); //guess
+        put(52, 2.400); //guess
+        put(53, 2.399); //guess
+        put(54, 2.398); //guess
+        put(55, 2.396); //guess
+        put(56, 2.395); //guess
+        put(57, 2.393); //guess
+        put(58, 2.392); //guess
+        put(59, 2.391); //guess
+        put(60, 2.390);
+        put(70, 2.381);
+        put(80, 2.374);
+        put(90, 2.369);
+        put(100, 2.364);
+        put(120, 2.358);
+        put(150, 2.351);
+        put(200, 2.345);
+        put(300, 2.339);
+        put(500, 2.334);
+        put(1000, 2.330);
     }};
     static HashMap<Integer, Double> p0025 = new HashMap<Integer, Double>() {{
         put(1, 12.076);
@@ -69,46 +105,118 @@ public class Main extends Thread {
         put(28, 2.048);
         put(29, 2.045);
         put(30, 2.042);
+        put(31, 2.040);
+        put(32, 2.037);
+        put(33, 2.035);
+        put(34, 2.032);
+        put(35, 2.030);
+        put(36, 2.028);
+        put(37, 2.026);
+        put(38, 2.024);
+        put(39, 2.023);
         put(40, 2.021);
+        put(41, 2.020); //guess
+        put(42, 2.018);
+        put(43, 2.021); //guess
+        put(44, 2.015);
+        put(45, 2.014); //guess
+        put(46, 2.013);
+        put(47, 2.012); //guess
+        put(48, 2.011);
+        put(49, 2.010); //guess
+        put(50, 2.009);
+        put(51, 2.009); //guess
+        put(52, 2.008); //guess
+        put(53, 2.007); //guess
+        put(54, 2.006); //guess
+        put(55, 2.005); //guess
+        put(56, 2.004); //guess
+        put(57, 2.003); //guess
+        put(58, 2.002); //guess
+        put(59, 2.001); //guess
         put(60, 2.000);
+        put(70, 1.994);
+        put(80, 1.990);
+        put(90, 1.987);
+        put(100, 1.984);
         put(120, 1.980);
-        put(999, 1.960);
+        put(150, 1.976);
+        put(200, 1.972);
+        put(300, 1.968);
+        put(500, 1.965);
+        put(1000, 1.962);
     }};
-    static HashMap<Integer, Double> p001 = new HashMap<Integer, Double>() {{
-        put(1, 31.821);
-        put(2, 6.965);
-        put(3, 4.541);
-        put(4, 3.747);
-        put(5, 3.365);
-        put(6, 3.143);
-        put(7, 2.998);
-        put(8, 2.896);
-        put(9, 2.821);
-        put(10, 2.764);
-        put(11, 2.718);
-        put(12, 2.681);
-        put(13, 2.650);
-        put(14, 2.624);
-        put(15, 2.602);
-        put(16, 2.583);
-        put(17, 2.567);
-        put(18, 2.552);
-        put(19, 2.539);
-        put(20, 2.528);
-        put(21, 2.518);
-        put(22, 2.508);
-        put(23, 2.500);
-        put(24, 2.492);
-        put(25, 2.485);
-        put(26, 2.479);
-        put(27, 2.473);
-        put(28, 2.467);
-        put(29, 2.462);
-        put(30, 2.457);
-        put(40, 2.423);
-        put(60, 2.390);
-        put(120, 2.358);
-        put(999, 2.326);
+    static HashMap<Integer, Double> p005 = new HashMap<Integer, Double>() {{
+        put(1, 6.314);
+        put(2, 2.920);
+        put(3, 2.353);
+        put(4, 2.132);
+        put(5, 2.015);
+        put(6, 1.943);
+        put(7, 1.895);
+        put(8, 1.860);
+        put(9, 1.833);
+        put(10, 1.812);
+        put(11, 1.796);
+        put(12, 1.782);
+        put(13, 1.771);
+        put(14, 1.761);
+        put(15, 1.753);
+        put(16, 1.746);
+        put(17, 1.740);
+        put(18, 1.734);
+        put(19, 1.729);
+        put(20, 1.725);
+        put(21, 1.721);
+        put(22, 1.717);
+        put(23, 1.714);
+        put(24, 1.711);
+        put(25, 1.708);
+        put(26, 1.706);
+        put(27, 1.703);
+        put(28, 1.701);
+        put(29, 1.699);
+        put(30, 1.697);
+        put(31, 1.695);
+        put(32, 1.694);
+        put(33, 1.692);
+        put(34, 1.691);
+        put(35, 1.690);
+        put(36, 1.688);
+        put(37, 1.687);
+        put(38, 1.686);
+        put(39, 1.685);
+        put(40, 1.684);
+        put(41, 1.683); //guess
+        put(42, 1.682);
+        put(43, 1.681); //guess
+        put(44, 1.680);
+        put(45, 1.680); //guess
+        put(46, 1.679);
+        put(47, 1.678); //guess
+        put(48, 1.677);
+        put(49, 1.677); //guess
+        put(50, 1.676);
+        put(51, 1.676); //guess
+        put(52, 1.675); //guess
+        put(53, 1.675); //guess
+        put(54, 1.674); //guess
+        put(55, 1.674); //guess
+        put(56, 1.674); //guess
+        put(57, 1.673); //guess
+        put(58, 1.673); //guess
+        put(59, 1.672); //guess
+        put(60, 1.671);
+        put(70, 1.667);
+        put(80, 1.664);
+        put(90, 1.662);
+        put(100, 1.660);
+        put(120, 1.658);
+        put(150, 1.655);
+        put(200, 1.652);
+        put(300, 1.650);
+        put(500, 1.648);
+        put(1000, 1.646);
     }};
     static double mean1;
     static double mean2;
@@ -136,7 +244,7 @@ public class Main extends Thread {
         //testing: https://www.graphpad.com/quickcalcs/ttest1/
     }
 
-    private static void OneSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
+    private static void oneSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
         ArrayList<Double> dataset = new ArrayList<Double>();
         //fist dataset
         System.out.println("Type in the represented data of the set! Type '-1' to quit!");
@@ -210,7 +318,7 @@ public class Main extends Thread {
         exit();
     }
 
-    private static void TwoSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
+    private static void twoSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
         ArrayList<Double> dataset1 = new ArrayList<Double>();
         ArrayList<Double> dataset2 = new ArrayList<Double>();
         double arrayElement = 0;
@@ -220,13 +328,13 @@ public class Main extends Thread {
         double max = 20;
 
         Random r = new Random();
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 30; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset1.add(randomValue);
         }
         int n = dataset1.size();
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 30; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset2.add(randomValue);
         }
@@ -263,21 +371,11 @@ public class Main extends Thread {
 //        System.out.println("Second dataset completed\n------------\n");
 
 
-        //https://www.youtube.com/watch?v=pTmLQvMM-1M&t=382s
-//        dataset1 = new double[]{15.2, 15.3, 16.0, 15.8, 15.6, 14.9, 15.0, 15.4, 15.6, 15.7, 15.5, 15.2, 15.5, 15.1, 15.3, 15.0};
-//        dataset2 = new double[]{15.9, 15.9, 15.2, 16.6, 15.2, 15.8, 15.8, 16.2, 15.6, 15.6, 15.8, 15.5, 15.5, 15.5, 14.9, 15.9};
-        //https://www.youtube.com/watch?v=BPbHujvA9UU&t=119s
-//        dataset1 = new double[]{23, 25, 28, 30, 25, 25, 26, 25, 22, 30, 35, 40, 35, 30};
-//        dataset2 = new double[]{35, 40, 30, 35, 40, 45, 30, 30, 35, 40, 40, 35, 38, 41};
-        //https://hu.wikipedia.org/wiki/K%C3%A9tmint%C3%A1s_t-pr%C3%B3ba#A_pr%C3%B3ba_nullhipot%C3%A9zise
-//        double[] dataset1 = new double[]{52, 57, 62, 55, 64, 57, 56, 55};
-//        double[] dataset2 = new double[]{41, 34, 33, 36, 40, 25, 31, 37, 34, 30, 38};
-//        int n = dataset1.length;
-//        int m = dataset2.length;
         int degrees_of_freedom = n + m - 2;
 
         //mean, standard deviation, variance
         double tValueStartTime = System.currentTimeMillis();
+
         mean1 = Mean(dataset1);
         mean2 = Mean(dataset2);
         standardDeviation1 = Math.pow(StandardDeviation(dataset1), 2);
@@ -287,12 +385,10 @@ public class Main extends Thread {
         System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1) + "\t" + String.format("%.3f", mean2));
         System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1) + "\t" + String.format("%.3f", standardDeviation2));
         System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1) + "\t" + String.format("%.3f", variance2));
-//        System.out.println("The mean of the difference of the sets:\t" + String.format("%.3f", difference_sum / n));
         System.out.println("Degrees of Freedom: " + degrees_of_freedom);
 
         //calculate the t-value
         double t_value;
-
         t_value = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 +
                 (m - 1) * standardDeviation2))) *
                 (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
@@ -383,7 +479,7 @@ public class Main extends Thread {
         double ttestTimeEnd = System.currentTimeMillis();
 
         //timing results
-        System.out.println("Sequential T-Test calculation Time: " + String.format("%.5f",((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart))) + "ms.");
+        System.out.println("Sequential T-Test calculation Time: " + String.format("%.5f", ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart))) + "ms.");
         exit();
     }
 
@@ -404,10 +500,10 @@ public class Main extends Thread {
         int option = scanner.nextInt();
         if (option == 1) {
             //one sampled t-test
-            OneSampledTTest(p005, p0025, p001);
+            oneSampledTTest(p005, p0025, p001);
         } else if (option == 2) {
             //two sampled t-test
-            TwoSampledTTest(p005, p0025, p001);
+            twoSampledTTest(p005, p0025, p001);
         } else {
             System.out.println("This option is not valid!");
             menu();

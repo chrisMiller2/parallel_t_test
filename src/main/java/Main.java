@@ -266,12 +266,12 @@ public class Main extends Thread {
         double m = scanner.nextDouble();
 
         //mean, standard deviation, variance
-        mean1 = Mean(dataset);
+        mean1 = mean(dataset);
         if (n < 30)
-            standardDeviation1 = StandardDeviation(dataset);
+            standardDeviation1 = standardDeviation(dataset);
         else
-            standardDeviation1 = Math.pow(StandardDeviation(dataset), 2);
-        variance1 = Variance(dataset, mean1);
+            standardDeviation1 = Math.pow(standardDeviation(dataset), 2);
+        variance1 = variance(dataset, mean1);
         System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1));
         System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1));
         System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1));
@@ -288,7 +288,7 @@ public class Main extends Thread {
         //significance level = chance of data being random
         System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
         int option = scanner.nextInt();
-        p = POption(option);
+        p = pOption(option);
 
         //we take a p*100% risk that we reject the null hypothesis while its true
         if (p == 0.01) {
@@ -376,12 +376,12 @@ public class Main extends Thread {
         //mean, standard deviation, variance
         double tValueStartTime = System.currentTimeMillis();
 
-        mean1 = Mean(dataset1);
-        mean2 = Mean(dataset2);
-        standardDeviation1 = Math.pow(StandardDeviation(dataset1), 2);
-        standardDeviation2 = Math.pow(StandardDeviation(dataset2), 2);
-        variance1 = Variance(dataset1, mean1);
-        variance2 = Variance(dataset1, mean2);
+        mean1 = mean(dataset1);
+        mean2 = mean(dataset2);
+        standardDeviation1 = Math.pow(standardDeviation(dataset1), 2);
+        standardDeviation2 = Math.pow(standardDeviation(dataset2), 2);
+        variance1 = variance(dataset1, mean1);
+        variance2 = variance(dataset1, mean2);
         System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1) + "\t" + String.format("%.3f", mean2));
         System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1) + "\t" + String.format("%.3f", standardDeviation2));
         System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1) + "\t" + String.format("%.3f", variance2));
@@ -400,7 +400,7 @@ public class Main extends Thread {
         //significance level = chance of data being random
         System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
         int option = scanner.nextInt();
-        p = POption(option);
+        p = pOption(option);
 
         //tail definition
 //        System.out.println("(1) Two tailed or (2) One tailed?");
@@ -510,7 +510,7 @@ public class Main extends Thread {
         }
     }
 
-    private static double POption(int option) {
+    private static double pOption(int option) {
         double p = 0.0;
         switch (option) {
             case 1:
@@ -524,12 +524,12 @@ public class Main extends Thread {
                 break;
             default:
                 System.out.println("This option is invalid, select the valid options!");
-                POption(option);
+                pOption(option);
         }
         return p;
     }
 
-    private static double Variance(ArrayList<Double> dataset, double mean) {
+    private static double variance(ArrayList<Double> dataset, double mean) {
         double sqDiff = 0;
         for (int i = 0; i < dataset.size(); i++) {
             sqDiff += (dataset.get(i) - mean) * (dataset.get(i) - mean);
@@ -537,15 +537,15 @@ public class Main extends Thread {
         return (double) sqDiff / dataset.size();
     }
 
-    private static double StandardDeviation(ArrayList<Double> dataset) {
+    private static double standardDeviation(ArrayList<Double> dataset) {
         double sum = 0;
         for (int i = 0; i < dataset.size(); i++) {
-            sum = sum + ((dataset.get(i) - Mean(dataset)) * (dataset.get(i) - Mean(dataset)));
+            sum = sum + ((dataset.get(i) - mean(dataset)) * (dataset.get(i) - mean(dataset)));
         }
         return (double) Math.sqrt(sum / (dataset.size() - 1));
     }
 
-    private static double Mean(ArrayList<Double> dataset) {
+    private static double mean(ArrayList<Double> dataset) {
         double sum = 0;
         for (Double aDouble : dataset) {
             sum += aDouble;

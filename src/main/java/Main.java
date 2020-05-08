@@ -1,3 +1,6 @@
+import javax.sound.midi.Soundbank;
+import java.awt.print.PrinterAbortException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main extends Thread {
@@ -70,9 +73,13 @@ public class Main extends Thread {
         put(120, 2.358);
         put(150, 2.351);
         put(200, 2.345);
+        put(298, 2.339); //guess
         put(300, 2.339);
         put(500, 2.334);
         put(1000, 2.330);
+        put(9998, 2.330); //guess
+        put(99998, 2.330); //guess
+        put(999998, 2.330); //guess
     }};
     static HashMap<Integer, Double> p0025 = new HashMap<Integer, Double>() {{
         put(1, 12.076);
@@ -142,9 +149,13 @@ public class Main extends Thread {
         put(120, 1.980);
         put(150, 1.976);
         put(200, 1.972);
+        put(298, 1.968); //guess
         put(300, 1.968);
         put(500, 1.965);
         put(1000, 1.962);
+        put(9998, 1.962); //guess
+        put(99998, 1.962); //guess
+        put(999998, 1.962); //guess
     }};
     static HashMap<Integer, Double> p005 = new HashMap<Integer, Double>() {{
         put(1, 6.314);
@@ -210,13 +221,17 @@ public class Main extends Thread {
         put(70, 1.667);
         put(80, 1.664);
         put(90, 1.662);
-        put(100, 1.660);
-        put(120, 1.658);
-        put(150, 1.655);
-        put(200, 1.652);
+        put(100,1.660);
+        put(120,1.658);
+        put(150,1.655);
+        put(200,1.652);
+        put(298,1.651); //guess
         put(300, 1.650);
         put(500, 1.648);
         put(1000, 1.646);
+        put(9998, 1.646); //guess
+        put(99998, 1.646); //guess
+        put(999998, 1.646); //guess
     }};
     static double mean1;
     static double mean2;
@@ -327,18 +342,31 @@ public class Main extends Thread {
         double min = 10;
         double max = 20;
 
+
+        for (int i = 0; i < 5; i++) {
+
+            dataset1.add((double) i);
+            dataset2.add((double) i * 2);
+        }
+
+        int n = dataset1.size();
+        int m = dataset2.size();
+
+        /*
         Random r = new Random();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 16000; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset1.add(randomValue);
         }
         int n = dataset1.size();
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 16000; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset2.add(randomValue);
         }
         int m = dataset2.size();
+
+         */
 
         //fist dataset
 //        int i = 1;
@@ -370,16 +398,16 @@ public class Main extends Thread {
 //        int m = dataset2.size();
 //        System.out.println("Second dataset completed\n------------\n");
 
+        double realStart = System.nanoTime();
 
         int degrees_of_freedom = n + m - 2;
 
         //mean, standard deviation, variance
-        double tValueStartTime = System.currentTimeMillis();
 
         mean1 = mean(dataset1);
         mean2 = mean(dataset2);
-        standardDeviation1 = Math.pow(standardDeviation(dataset1), 2);
-        standardDeviation2 = Math.pow(standardDeviation(dataset2), 2);
+        standardDeviation1 = standardDeviation(dataset1);
+        standardDeviation2 = standardDeviation(dataset2);
         variance1 = variance(dataset1, mean1);
         variance2 = variance(dataset1, mean2);
         System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1) + "\t" + String.format("%.3f", mean2));
@@ -388,14 +416,50 @@ public class Main extends Thread {
         System.out.println("Degrees of Freedom: " + degrees_of_freedom);
 
         //calculate the t-value
+
+        //Double a = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 + (m - 1) * standardDeviation2)));
+
+        double mean = mean1 - mean2;
+        double s1 = (n-1) * standardDeviation1;
+        double s2 = (m-1) * standardDeviation2;
+        double s = s1 + s2;
+
+        s = Math.sqrt(s);
+
+        // képlet első része
+        double a = mean / s;
+
+        // n és m értékeinek long típusúra konvertálása
+        long nl = n;
+        long ml = m;
+
+        // n * m és n + m kiszámítása
+        long nxm = nl * ml;
+        long nm = nl + ml;
+
+        // képlet második része
+        double b = Math.sqrt((nxm * degrees_of_freedom) / nm);
+
+        //Double b = (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
+
+        //b = (Math.sqrt((nxm * degrees_of_freedom)) / nm);
+
+
+        System.out.println("na: " + a + "b: " + b);
+        double t_value = a * b;
+
+        // eredeti képlet
+        /*
         double t_value;
         t_value = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 +
                 (m - 1) * standardDeviation2))) *
                 (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
+         */
 
-        System.out.println("T-value = " + String.format("%.3f", t_value));
-        double tValueEndTime = System.currentTimeMillis();
+        double realStop = System.nanoTime();
 
+        System.out.println("T-value = " + String.format("%.10f", t_value));
+        System.out.println("Time: " +  String.format("%.6f", ((realStop - realStart) * 1e-6)) + " ms");
 
         //significance level = chance of data being random
         System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
@@ -413,14 +477,29 @@ public class Main extends Thread {
 
         //we want a critical value that is less, than p
         //so we have less than p*100% chance that the data is random
+
+        int near = 1;
+
         if (p == 0.01) {
-            critical = p001.get(degrees_of_freedom);
+//            critical = p001.get(degrees_of_freedom);
+
+            near = nearestValue(p001, degrees_of_freedom);
+            critical = p001.get(near);
+
             System.out.println("Critical value is " + critical + ".");
         } else if (p == 0.025) {
-            critical = p0025.get(degrees_of_freedom);
+
+            near = nearestValue(p0025, degrees_of_freedom);
+            critical = p0025.get(near);
+
+//            critical = p0025.get(degrees_of_freedom);
             System.out.println("Critical value is " + critical + ".");
         } else if (p == 0.05) {
-            critical = p005.get(degrees_of_freedom);
+
+            near = nearestValue(p005, degrees_of_freedom);
+            critical = p005.get(near);
+
+//            critical = p005.get(degrees_of_freedom);
             System.out.println("Critical value is " + critical + ".");
         }
 
@@ -475,11 +554,258 @@ public class Main extends Thread {
 //                System.out.println("it is not significant, the data is likely random, we accept null hypothesis");
 //            }
 //        }
+//
+//        double ttestTimeEnd = System.currentTimeMillis();
+
+        //timing results
+//        System.out.println("Sequential T-Test calculation Time: " + String.format("%.5f", ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart))) + "ms.");
+        exit();
+    }
+
+    private static void parallelTwoSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
+
+        ArrayList<Double> dataset1 = new ArrayList<Double>();
+        ArrayList<Double> dataset2 = new ArrayList<Double>();
+        double arrayElement = 0;
+
+        //random datasets
+        double min = 10;
+        double max = 20;
+
+        /*
+        for (int i = 0; i < 5; i++) {
+
+            dataset1.add((double) i);
+            dataset2.add((double) i * 2);
+        }
+
+        int n = dataset1.size();
+        int m = dataset2.size();
+         */
+
+        Random r = new Random();
+        for (int i = 0; i < 262000; i++) {
+            double randomValue = min + (max - min) * r.nextDouble();
+            dataset1.add(randomValue);
+        }
+
+        long n = dataset1.size();
+
+        for (int i = 0; i < 262000; i++) {
+            double randomValue = min + (max - min) * r.nextDouble();
+            dataset2.add(randomValue);
+        }
+
+        long m = dataset2.size();
+
+        double realStart = System.nanoTime();
+
+        long degrees_of_freedom = n + m - 2;
+
+        //mean, standard deviation, variance
+
+        int numThread = 1;
+
+        // átlag számítása n szálon
+        mean1 = parallelMean(dataset1, numThread);
+        mean2 = parallelMean(dataset2, numThread);
+        standardDeviation1 = parallelStDev(dataset1, mean1, numThread);
+        standardDeviation2 = parallelStDev(dataset2, mean2, numThread);
+//        standardDeviation1 = Math.pow(standardDeviation(dataset1), 2);
+//        standardDeviation2 = Math.pow(standardDeviation(dataset2), 2);
+        variance1 = variance(dataset1, mean1);
+        variance2 = variance(dataset1, mean2);
+        System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1) + "\t" + String.format("%.3f", mean2));
+        System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1) + "\t" + String.format("%.3f", standardDeviation2));
+        System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1) + "\t" + String.format("%.3f", variance2));
+        System.out.println("Degrees of Freedom: " + degrees_of_freedom);
+
+        //calculate the t-value
+
+        //Double a = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 + (m - 1) * standardDeviation2)));
+
+
+//        double tValueStartTime = System.currentTimeMillis();
+        double tValueStartTime = System.nanoTime();
+
+        double mean = 0.0;
+        //double s1 = (n-1) * standardDeviation1;
+        //double s2 = (m-1) * standardDeviation2;
+        double s1 = 0.0;
+        double s2 = 0.0;
+        double s = 0.0;
+
+        ParallelDouble p1 = new ParallelDouble(mean1, mean2, "-");
+        ParallelDouble p2 = new ParallelDouble((n-1), standardDeviation1, "*");
+        ParallelDouble p3 = new ParallelDouble((m-1), standardDeviation2, "*");
+        p1.start();
+        p2.start();
+        p3.start();
+
+        try {
+            p1.join();
+            p2.join();
+            p3.join();
+            mean = p1.result;
+            s1 = p2.result;
+            s2 = p3.result;
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        p1 = new ParallelDouble(s1, s2, "+");
+        p1.start();
+
+        try {
+            p1.join();
+            s = p1.result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        s = Math.sqrt(s);
+
+        // képlet első része
+        //double a = mean / s;
+        double a = 0.0;
+
+        p1 = new ParallelDouble(mean, s, "/");
+        p1.start();
+        try {
+            p1.join();
+            a = p1.result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        a = mean / s;
+
+        //double stop = System.currentTimeMillis();
+
+//        System.out.println("Time: " +  String.format("%.6f", ((realStop - realStart) * 1e-6)) + " ms");
+
+        // n és m értékeinek long típusúra konvertálása
+        long nxm = 0;
+        long nm = 0;
+
+        ParallelLong p4 = new ParallelLong(n, m, "*");
+        ParallelLong p5 = new ParallelLong(n, m, "+");
+        p4.start();
+        p5.start();
+
+        try {
+            p4.join();
+            p5.join();
+            nxm = p4.result;
+            nm = p5.result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        long nxmxdof = 0;
+
+        p4 = new ParallelLong(nxm, degrees_of_freedom, "*");
+        p4.start();
+        try {
+            p4.join();
+            nxmxdof = p4.result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        double b = Math.sqrt(nxmxdof / nm);
+
+        double t_value = a * b;
+
+        System.out.println("na: " + a + "b: " + b);
+
+        System.out.println("T value: " + t_value);
+
+        /*
+        ArrayList<Double> array = new ArrayList<Double>();
+
+        for(int i = 0; i < Integer.MAX_VALUE/100; i++)
+        {
+            array.add(1.0);
+        }
+
+        double sum = 0.0;
+        sum = parallelSum(array, 6);
+        System.out.println("\nSum: " + sum);
+
+        double start1 = System.nanoTime();
+        double sum2 = 0.0;
+        for(int i = 0; i < Integer.MAX_VALUE/100; i++)
+        {
+            sum2 += array.get(i);
+        }
+        double stop1 = System.nanoTime();
+        System.out.println("\nSingle thread time: " +  String.format("%.6f", ((stop1 - start1) * 1e-6)) + " ms");
+        */
+
+        // eredeti képlet
+
+//        double t_value;
+//        t_value = ((mean1 - mean2) / (Math.sqrt((n - 1) * standardDeviation1 +
+//                (m - 1) * standardDeviation2))) *
+//                (Math.sqrt((n * m * (double) (degrees_of_freedom)) / (n + m)));
+//
+//
+//        System.out.println("T-value = " + String.format("%.10f", t_value));
+//          double tValueEndTime = System.currentTimeMillis();
+
+        double realStop = System.nanoTime();
+        System.out.println("Full Time: " +  String.format("%.6f", ((realStop - realStart) * 1e-6)) + " ms");
+
+        //significance level = chance of data being random
+        System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
+        int option = scanner.nextInt();
+        p = pOption(option);
+
+        int near = 1;
+
+        if (p == 0.01) {
+
+            near = nearestValue(p001, degrees_of_freedom);
+            critical = p001.get(near); // legközelebbi érték visszaadása
+
+            System.out.println("Critical value is " + critical + ".");
+        } else if (p == 0.025) {
+
+            near = nearestValue(p0025, degrees_of_freedom);
+            critical = p0025.get(near); // legközelebbi érték visszaadása
+
+            System.out.println("Critical value is " + critical + ".");
+        } else if (p == 0.05) {
+
+            near = nearestValue(p005, degrees_of_freedom);
+            critical = p005.get(near); // legközelebbi érték visszaadása
+
+            System.out.println("Critical value is " + critical + ".");
+        }
+
+        //calculate t-test value
+//        double ttestTimeStart = System.currentTimeMillis();
+
+        //calculate tail
+        if (t_value < 0) {
+            critical = critical * (-1);
+            System.out.println("Left-tail, critical value becomes negative: " + critical);
+        } else {
+            System.out.println("Right-tail");
+        }
+
+        System.out.print(100 - (p * 100) + "% confidence, that ");
+        if (t_value > critical) {
+            System.out.println("it is significant, the data is not likely random, we reject null hypothesis.");
+        } else
+            System.out.println("it is not significant, the data is likely random, we accept null hypothesis.");
 
         double ttestTimeEnd = System.currentTimeMillis();
 
         //timing results
-        System.out.println("Sequential T-Test calculation Time: " + String.format("%.5f", ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart))) + "ms.");
+//      System.out.println("Sequential T-Test calculation Time: " + String.format("%.5f", ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart))) + "ms.");
         exit();
     }
 
@@ -496,7 +822,7 @@ public class Main extends Thread {
 
     private static void menu() {
         System.out.println("*****Welcome to the T-TEST*****");
-        System.out.println("(1) One sampled or (2) Two sampled T-Test?");
+        System.out.println("(1) One sampled\n(2) Two sampled T-Test\n(3) Parallel two sampled T-Test?");
         int option = scanner.nextInt();
         if (option == 1) {
             //one sampled t-test
@@ -504,7 +830,12 @@ public class Main extends Thread {
         } else if (option == 2) {
             //two sampled t-test
             twoSampledTTest(p005, p0025, p001);
-        } else {
+        }
+        else if(option == 3)
+        {
+            parallelTwoSampledTTest(p005, p0025, p001);
+        }
+        else {
             System.out.println("This option is not valid!");
             menu();
         }
@@ -551,5 +882,109 @@ public class Main extends Thread {
             sum += aDouble;
         }
         return sum / dataset.size();
+    }
+
+    private static double parallelSum(ArrayList<Double> array, int numThread)
+    {
+        double result = 0.0;
+        int size = array.size();
+        ArrayList<ParallelSum> thread_array = new ArrayList<ParallelSum>();
+        int step = size / numThread;
+
+        for(int i = 0; i < numThread; i++)
+        {
+            int min = i * step;
+            int max = (i * step) + step;
+            if(i == numThread-1)
+            {
+                max = size;
+            }
+            ParallelSum p = new ParallelSum(array, min, max);
+            thread_array.add(p);
+        }
+
+        for(int i = 0; i < numThread; i++)
+        {
+            thread_array.get(i).start();
+        }
+
+        for(int i = 0; i < numThread; i++)
+        {
+            try {
+                thread_array.get(i).join();
+                result += thread_array.get(i).partial;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    private static double parallelMean(ArrayList<Double> array, int numThread)
+    {
+        double sum = parallelSum(array, numThread);
+        return sum / array.size();
+    }
+
+    private static double parallelStDevSum(ArrayList<Double> array, double mean, int numThread)
+    {
+        double result = 0.0;
+        int size = array.size();
+        ArrayList<StandardDeviation> thread_array = new ArrayList<StandardDeviation>();
+        int step = size / numThread;
+
+        for(int i = 0; i < numThread; i++)
+        {
+            int min = i * step;
+            int max = (i * step) + step;
+            if(i == numThread-1)
+            {
+                max = size;
+            }
+            StandardDeviation p = new StandardDeviation(array, mean, min, max);
+            thread_array.add(p);
+        }
+
+        for(int i = 0; i < numThread; i++)
+        {
+            thread_array.get(i).start();
+        }
+
+        for(int i = 0; i < numThread; i++)
+        {
+            try {
+                thread_array.get(i).join();
+                result += thread_array.get(i).partial;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    private static double parallelStDev(ArrayList<Double> array, double mean, int numThread)
+    {
+        double sum = parallelStDevSum(array, mean, numThread);
+        int size = array.size() - 1;
+        double val = sum / size;
+        return Math.sqrt(val);
+    }
+
+    // a hashMap-ben a keresett kulcshoz legközelebbit adja vissza, ha nem létezik
+    private static int nearestValue(Map<Integer, Double> map, long target)
+    {
+        double minDiff = Integer.MAX_VALUE;
+        int nearest = 1;
+        for(Integer key: map.keySet())
+        {
+            double diff = Math.abs(target - key);
+            if(diff < minDiff)
+            {
+                nearest = key;
+                minDiff = diff;
+            }
+        }
+        return nearest;
     }
 }

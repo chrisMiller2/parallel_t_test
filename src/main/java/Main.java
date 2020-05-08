@@ -4,6 +4,9 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main extends Thread {
+
+    public static int N = 262144;
+
     static Scanner scanner = new Scanner(System.in);
     static HashMap<Integer, Double> p001 = new HashMap<Integer, Double>() {{
         put(1, 31.821);
@@ -342,7 +345,7 @@ public class Main extends Thread {
         double min = 10;
         double max = 20;
 
-
+        /*
         for (int i = 0; i < 5; i++) {
 
             dataset1.add((double) i);
@@ -351,22 +354,20 @@ public class Main extends Thread {
 
         int n = dataset1.size();
         int m = dataset2.size();
+         */
 
-        /*
         Random r = new Random();
-        for (int i = 0; i < 16000; i++) {
+        for (int i = 0; i < N; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset1.add(randomValue);
         }
         int n = dataset1.size();
 
-        for (int i = 0; i < 16000; i++) {
+        for (int i = 0; i < N; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset2.add(randomValue);
         }
         int m = dataset2.size();
-
-         */
 
         //fist dataset
 //        int i = 1;
@@ -584,14 +585,14 @@ public class Main extends Thread {
          */
 
         Random r = new Random();
-        for (int i = 0; i < 262000; i++) {
+        for (int i = 0; i < N; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset1.add(randomValue);
         }
 
         long n = dataset1.size();
 
-        for (int i = 0; i < 262000; i++) {
+        for (int i = 0; i < N; i++) {
             double randomValue = min + (max - min) * r.nextDouble();
             dataset2.add(randomValue);
         }
@@ -604,7 +605,7 @@ public class Main extends Thread {
 
         //mean, standard deviation, variance
 
-        int numThread = 1;
+        int numThread = 6;
 
         // átlag számítása n szálon
         mean1 = parallelMean(dataset1, numThread);

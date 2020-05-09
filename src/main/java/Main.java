@@ -6,6 +6,7 @@ import java.util.*;
 public class Main extends Thread {
 
     public static int N = 262144;
+    public static int numThread = 12;
 
     static Scanner scanner = new Scanner(System.in);
     static HashMap<Integer, Double> p001 = new HashMap<Integer, Double>() {{
@@ -264,24 +265,40 @@ public class Main extends Thread {
 
     private static void oneSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
         ArrayList<Double> dataset = new ArrayList<Double>();
-        //fist dataset
-        System.out.println("Type in the represented data of the set! Type '-1' to quit!");
-        int i = 1;
-        while (true) {
-            System.out.print(i + ".: ");
-            double userInput = scanner.nextDouble();
-            if (userInput != -1) {
-                dataset.add(userInput);
-                i++;
-            } else
-                break;
+        double arrayElement = 0;
+
+        //random datasets
+        double min = 10;
+        double max = 20;
+
+        //automatic random dataset
+        Random r = new Random();
+        for (int i = 0; i < N; i++) {
+            double randomValue = min + (max - min) * r.nextDouble();
+            dataset.add(randomValue);
         }
         int n = dataset.size();
-        System.out.println("Dataset completed\n------------\n");
 
-        int degrees_of_freedom = n - 1;
+        //manual dataset
+//        System.out.println("Type in the represented data of the set! Type '-1' to quit!");
+//        int i = 1;
+//        while (true) {
+//            System.out.print(i + ".: ");
+//            double userInput = scanner.nextDouble();
+//            if (userInput != -1) {
+//                dataset.add(userInput);
+//                i++;
+//            } else
+//                break;
+//        }
+//        int n = dataset.size();
+//        System.out.println("Dataset completed\n------------\n");
+
+        long degrees_of_freedom = n - 1;
         System.out.println("Type in the value you want to examine!");
         double m = scanner.nextDouble();
+
+        double realStart = System.nanoTime();
 
         //mean, standard deviation, variance
         mean1 = mean(dataset);
@@ -298,25 +315,40 @@ public class Main extends Thread {
         //calculate the t-value
         double t_value;
 
-        double tValueStartTime = System.currentTimeMillis();
-        t_value = (mean1 - m) / (standardDeviation1 / Math.sqrt(n));
-        System.out.println("T-value = " + String.format("%.3f", t_value));
-        double tValueEndTime = System.currentTimeMillis();
+        double a = mean1 - m;
+        double squareT = Math.sqrt(n);
+        double b = standardDeviation1 / squareT;
+
+        t_value = a / b;
+
+        //eredeti keplet
+//        t_value = (mean1 - m) / (standardDeviation1 / Math.sqrt(n));
+
+        double realStop = System.nanoTime();
+
+        System.out.println("T-value = " + String.format("%.10f", t_value));
+        System.out.println("Time: " +  String.format("%.6f", ((realStop - realStart) * 1e-6)) + " ms");
+
+
 
         //significance level = chance of data being random
         System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
         int option = scanner.nextInt();
         p = pOption(option);
 
-        //we take a p*100% risk that we reject the null hypothesis while its true
+        int near = 1;
+
         if (p == 0.01) {
-            critical = p001.get(degrees_of_freedom);
+            near = nearestValue(p001, degrees_of_freedom);
+            critical = p001.get(near);
             System.out.println("Critical value is " + critical + ".");
         } else if (p == 0.025) {
-            critical = p0025.get(degrees_of_freedom);
+            near = nearestValue(p0025, degrees_of_freedom);
+            critical = p0025.get(near);
             System.out.println("Critical value is " + critical + ".");
         } else if (p == 0.05) {
-            critical = p005.get(degrees_of_freedom);
+            near = nearestValue(p005, degrees_of_freedom);
+            critical = p005.get(near);
             System.out.println("Critical value is " + critical + ".");
         }
 
@@ -331,8 +363,6 @@ public class Main extends Thread {
 
         double ttestTimeEnd = System.currentTimeMillis();
 
-        //timing results
-        System.out.println("Sequential T-Test calculation Time: " + ((tValueEndTime - tValueStartTime) + (ttestTimeEnd - ttestTimeStart)) + "ms.");
         exit();
     }
 
@@ -563,8 +593,122 @@ public class Main extends Thread {
         exit();
     }
 
-    private static void parallelTwoSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
+    private static void parallelOneSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
+        ArrayList<Double> dataset = new ArrayList<Double>();
 
+        //random datasets
+        double min = 10;
+        double max = 20;
+
+        //automatic random dataset
+        Random r = new Random();
+        for (int i = 0; i < N; i++) {
+            double randomValue = min + (max - min) * r.nextDouble();
+            dataset.add(randomValue);
+        }
+        int n = dataset.size();
+
+        //manual dataset
+//        System.out.println("Type in the represented data of the set! Type '-1' to quit!");
+//        int i = 1;
+//        while (true) {
+//            System.out.print(i + ".: ");
+//            double userInput = scanner.nextDouble();
+//            if (userInput != -1) {
+//                dataset.add(userInput);
+//                i++;
+//            } else
+//                break;
+//        }
+//        int n = dataset.size();
+//        System.out.println("Dataset completed\n------------\n");
+
+        long degrees_of_freedom = n - 1;
+        System.out.println("Type in the value you want to examine!");
+        double m = scanner.nextDouble();
+
+        double realStart = System.nanoTime();
+
+        //mean, standard deviation, variance
+        mean1 = parallelMean(dataset, numThread);
+        if (n < 30)
+            standardDeviation1 = parallelStDev(dataset, mean1, numThread);
+        else
+            standardDeviation1 = Math.pow(parallelStDev(dataset, mean1, numThread), 2);
+        variance1 = variance(dataset, mean1);
+        System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1));
+        System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1));
+        System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1));
+        System.out.println("Degrees of Freedom: " + degrees_of_freedom);
+
+        //calculate the t-value
+        double t_value = 0.0;
+        double a = 0.0;
+        double b = 0.0;
+        double squareT = Math.sqrt(n);
+        ParallelDouble p1 = new ParallelDouble(mean1, m,"-");
+        ParallelDouble p2 = new ParallelDouble(standardDeviation1, squareT, "/");
+
+        p1.start();
+        p2.start();
+
+        try {
+            p1.join();
+            p2.join();
+            a = p1.result;
+            b = p2.result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        t_value = a / b;
+
+        //eredeti keplet
+//        t_value = (mean1 - m) / (standardDeviation1 / Math.sqrt(n));
+
+        double realStop = System.nanoTime();
+
+        System.out.println("T-value = " + String.format("%.10f", t_value));
+        System.out.println("Time: " +  String.format("%.6f", ((realStop - realStart) * 1e-6)) + " ms");
+
+
+
+        //significance level = chance of data being random
+        System.out.println("\nSignificance level is:\n1) P = 0.05\n2) P = 0.025\n3) P = 0.01");
+        int option = scanner.nextInt();
+        p = pOption(option);
+
+        int near = 1;
+
+        if (p == 0.01) {
+            near = nearestValue(p001, degrees_of_freedom);
+            critical = p001.get(near);
+            System.out.println("Critical value is " + critical + ".");
+        } else if (p == 0.025) {
+            near = nearestValue(p0025, degrees_of_freedom);
+            critical = p0025.get(near);
+            System.out.println("Critical value is " + critical + ".");
+        } else if (p == 0.05) {
+            near = nearestValue(p005, degrees_of_freedom);
+            critical = p005.get(near);
+            System.out.println("Critical value is " + critical + ".");
+        }
+
+        //calculate t-test value
+        double ttestTimeStart = System.currentTimeMillis();
+
+        System.out.print(100 - (p * 100) + "% confidence, that ");
+        if (Math.abs(t_value) > critical)
+            System.out.println("the mean is significantly different from " + m + ", we reject null hypothesis.");
+        else
+            System.out.println("the mean is not significantly different from " + m + ", we accept null hypothesis.");
+
+        double ttestTimeEnd = System.currentTimeMillis();
+
+        exit();
+    }
+
+    private static void parallelTwoSampledTTest(HashMap<Integer, Double> p005, HashMap<Integer, Double> p0025, HashMap<Integer, Double> p001) {
         ArrayList<Double> dataset1 = new ArrayList<Double>();
         ArrayList<Double> dataset2 = new ArrayList<Double>();
         double arrayElement = 0;
@@ -604,9 +748,6 @@ public class Main extends Thread {
         long degrees_of_freedom = n + m - 2;
 
         //mean, standard deviation, variance
-
-        int numThread = 6;
-
         // átlag számítása n szálon
         mean1 = parallelMean(dataset1, numThread);
         mean2 = parallelMean(dataset2, numThread);
@@ -719,7 +860,7 @@ public class Main extends Thread {
 
         double t_value = a * b;
 
-        System.out.println("na: " + a + "b: " + b);
+//        System.out.println("na: " + a + "b: " + b);
 
         System.out.println("T value: " + t_value);
 
@@ -823,7 +964,7 @@ public class Main extends Thread {
 
     private static void menu() {
         System.out.println("*****Welcome to the T-TEST*****");
-        System.out.println("(1) One sampled\n(2) Two sampled T-Test\n(3) Parallel two sampled T-Test?");
+        System.out.println("(1) One sampled\n(2) Two sampled T-Test\n(3) Parallel one sampled T-Test\n(4) Parallel two sampled T-Test?");
         int option = scanner.nextInt();
         if (option == 1) {
             //one sampled t-test
@@ -833,6 +974,10 @@ public class Main extends Thread {
             twoSampledTTest(p005, p0025, p001);
         }
         else if(option == 3)
+        {
+            parallelOneSampledTTest(p005, p0025, p001);
+        }
+        else if(option == 4)
         {
             parallelTwoSampledTTest(p005, p0025, p001);
         }

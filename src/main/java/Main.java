@@ -749,14 +749,18 @@ public class Main extends Thread {
 
         //mean, standard deviation, variance
         // átlag számítása n szálon
+
+        //        standardDeviation1 = Math.pow(standardDeviation(dataset1), 2);
+//        standardDeviation2 = Math.pow(standardDeviation(dataset2), 2);
+//        variance1 = variance(dataset1, mean1);
+//        variance2 = variance(dataset1, mean2);
+
         mean1 = parallelMean(dataset1, numThread);
         mean2 = parallelMean(dataset2, numThread);
         standardDeviation1 = parallelStDev(dataset1, mean1, numThread);
         standardDeviation2 = parallelStDev(dataset2, mean2, numThread);
-//        standardDeviation1 = Math.pow(standardDeviation(dataset1), 2);
-//        standardDeviation2 = Math.pow(standardDeviation(dataset2), 2);
-        variance1 = variance(dataset1, mean1);
-        variance2 = variance(dataset1, mean2);
+        variance1 = parallelVariance(dataset1, mean1, numThread);
+        variance2 = parallelVariance(dataset2, mean2, numThread);
         System.out.println("Mean of the sets:\t\t\t\t\t\t" + String.format("%.3f", mean1) + "\t" + String.format("%.3f", mean2));
         System.out.println("Standard Deviation of the sets:\t\t\t" + String.format("%.3f", standardDeviation1) + "\t" + String.format("%.3f", standardDeviation2));
         System.out.println("Variance of the sets:\t\t\t\t\t" + String.format("%.3f", variance1) + "\t" + String.format("%.3f", variance2));
@@ -1070,6 +1074,43 @@ public class Main extends Thread {
     {
         double sum = parallelSum(array, numThread);
         return sum / array.size();
+    }
+
+    private static double parallelVariance(ArrayList<Double> array, double mean, int numThread)
+    {
+        double result = 0.0;
+        int size = array.size();
+        ArrayList<StandardDeviation> thread_array = new ArrayList<StandardDeviation>();
+        int step = size / numThread;
+
+        for(int i = 0; i < numThread; i++)
+        {
+            int min = i * step;
+            int max = (i * step) + step;
+            if(i == numThread-1)
+            {
+                max = size;
+            }
+            StandardDeviation p = new StandardDeviation(array, mean, min, max);
+            thread_array.add(p);
+        }
+
+        for(int i = 0; i < numThread; i++)
+        {
+            thread_array.get(i).start();
+        }
+
+        for(int i = 0; i < numThread; i++)
+        {
+            try {
+                thread_array.get(i).join();
+                result += thread_array.get(i).partial;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     private static double parallelStDevSum(ArrayList<Double> array, double mean, int numThread)
